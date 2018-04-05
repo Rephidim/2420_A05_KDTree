@@ -1,0 +1,77 @@
+public class PointST {
+	private int size;
+	
+	/**
+	 * construct an empty symbol table of points
+	 */
+	public PointSt() {
+		
+	}
+	
+	/**
+	 * is the symbol table empty?
+	 * @return
+	 */
+	public boolean isEmpty() {
+		
+	}
+	
+	/**
+	 * @return number of points
+	 */
+	public int size() {
+		return size;
+	}
+	
+	/**
+	 * associate the value val with point p
+	 * @param p
+	 * @param val
+	 */
+	public void put(Point2D p, Value val) {
+		
+	}
+	
+	/**
+	 * @param p
+	 * @return value associated with point p
+	 */
+	public Value get(Point2D p) {
+		
+	}
+	
+	/**
+	 * @param p
+	 * @return does this rectangle contain the point p (either inside or on the boundary)
+	 */
+	public boolean contains(Point2D p) {
+		
+	}
+	
+	/**
+	 * @return all points in the symbol table
+	 */
+	public Iterable<Point2D> points() {
+		
+	}
+	
+	/**
+	 * @param rect
+	 * @return all points that are inside the rectangle
+	 */
+	public Iterable<Point2D> range(RectHV rect) {
+		
+	}
+	
+	/**
+	 * @param p
+	 * @return a nearest neighbor to point p; null if the symbol table is empty
+	 */
+	public Point2D nearest(Point2D p) {
+		
+	}
+	
+	public static void main(String[] args) {
+		// unit testing of the methods (not graded)
+	}
+}
