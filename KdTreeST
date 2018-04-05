@@ -1,0 +1,53 @@
+public class KdTreeST <Key extends Comparable<Key>, Value>{
+	private Node root;
+	
+	private class Node {
+		private Key key;
+		private Value val;
+		private Node left, right;
+		
+		public Node(Key key, Value val) {
+			this.key = key;
+			this.val = val;
+		}
+	}
+	
+	public boolean contains(Key key) {
+		return get(key) != null;
+	}
+	
+	public Value get(Key key) {
+		return get(key, root);
+	}
+	
+	// return value associated with the given key rooted in tree at x.
+	private Value get(Key key, Node x) {
+		if (x == null) return null;
+		int cmp = key.compareTo(x.key);
+		if (cmp < 0) return get(key, x.left);
+		else if (cmp > 0) return get(key, x.right);
+		else return x.val;
+	}
+	
+	public void put(Key key, Value val) {
+		put(key, val, root);
+	}
+	
+	private Node put(Key key, Value val, Node x) {
+		if (x == null) return new Node(key, val);
+		int cmp = key.compareTo(x.key);
+		if (cmp == 0) {
+			x.val = val;
+			return x;
+		}
+		else if (cmp < 0) {
+			x.left = put(key,val,x.left);
+			return x;
+		}
+		else {
+			x.right = put(key,val,x.right);
+			return x;
+		}
+	}
+
+}
