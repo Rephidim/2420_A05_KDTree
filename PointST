@@ -1,11 +1,12 @@
-public class PointST {
-	private int size;
+public class PointST<Value> {
+	private RedBlackBST<Point2D, Value> rbt;
+	
 	
 	/**
 	 * construct an empty symbol table of points
 	 */
-	public PointSt() {
-		
+	public PointST() {
+		rbt = new RedBlackBST<Point2D, Value>();
 	}
 	
 	/**
@@ -13,14 +14,14 @@ public class PointST {
 	 * @return
 	 */
 	public boolean isEmpty() {
-		
+		return rbt.isEmpty();
 	}
 	
 	/**
 	 * @return number of points
 	 */
 	public int size() {
-		return size;
+		return rbt.size();
 	}
 	
 	/**
@@ -29,7 +30,7 @@ public class PointST {
 	 * @param val
 	 */
 	public void put(Point2D p, Value val) {
-		
+		rbt.put(p, val);
 	}
 	
 	/**
@@ -37,7 +38,7 @@ public class PointST {
 	 * @return value associated with point p
 	 */
 	public Value get(Point2D p) {
-		
+		return rbt.get(p);
 	}
 	
 	/**
@@ -45,13 +46,14 @@ public class PointST {
 	 * @return does this rectangle contain the point p (either inside or on the boundary)
 	 */
 	public boolean contains(Point2D p) {
-		
+		return rbt.contains(p);
 	}
 	
 	/**
 	 * @return all points in the symbol table
 	 */
 	public Iterable<Point2D> points() {
+		Queue<Point2D> q = new Queue<Point2D>();
 		
 	}
 	
@@ -60,7 +62,18 @@ public class PointST {
 	 * @return all points that are inside the rectangle
 	 */
 	public Iterable<Point2D> range(RectHV rect) {
+		Point2D min = new Point2D(rect.ymin(),rect.xmin());
+		Point2D max = new Point2D(rect.ymax(),rect.xmax());
+		Iterable<Point2D> list = rbt.keys(min,max);
 		
+		Queue<Point2D> q = new Queue<Point2D>();
+		for (Point2D key : list) {
+			if (rect.xmin() <= key.x() && key.x() <= rect.xmax()) {
+				q.enqueue(key);
+			}
+		}
+		
+		return q;
 	}
 	
 	/**
@@ -68,7 +81,17 @@ public class PointST {
 	 * @return a nearest neighbor to point p; null if the symbol table is empty
 	 */
 	public Point2D nearest(Point2D p) {
-		
+		if (isEmpty()) return null;
+		Point2D nearby = rbt.min();
+		double distance = p.distanceSquaredTo(nearby);
+		Iterable<Point2D> list = rbt.keys();
+		for(Point2D key: list) {
+			if (p.distanceSquaredTo(key) < distance && p.compareTo(key) != 0) {
+				nearby = key;
+				distance = p.distanceSquaredTo(key);
+			}
+		}
+		return nearby;
 	}
 	
 	public static void main(String[] args) {
