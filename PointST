@@ -53,8 +53,13 @@ public class PointST<Value> {
 	 * @return all points in the symbol table
 	 */
 	public Iterable<Point2D> points() {
+		if (rbt.isEmpty()) return null;
+		Iterable<Point2D> list = rbt.keys();
 		Queue<Point2D> q = new Queue<Point2D>();
-		
+		for (Point2D key : list) {
+			q.enqueue(key);
+		}
+		return q;
 	}
 	
 	/**
