@@ -1,15 +1,17 @@
 import edu.princeton.cs.algs4.Point2D;
 
-public class KdTreeST <Key extends Comparable<Key>, Value>{
+public class KdTreeST < Value>{
+	private static boolean vert = true;
 	private Node root;
 	
 	private class Node {
-		private Key key;
+		private Point2D p;
 		private Value val;
 		private Node left, right;
 		
-		public Node(Key key, Value val) {
-			this.key = key;
+		public Node(Point2D p, Value val) {
+			if (p == null || val == null) throw new NullPointerException("Args cannot be null");
+			this.p = p;
 			this.val = val;
 			if (root == null) {
 				root = this;
@@ -24,12 +26,14 @@ public class KdTreeST <Key extends Comparable<Key>, Value>{
 		root = null;
 	}
 	
-	public boolean contains(Key key) {
-		return get(key) != null;
+	public boolean contains(Point2D p) {
+		if (p == null) throw new NullPointerException("Args cannot be null");
+		return get(p) != null;
 	}
 	
-	public Value get(Key key) {
-		return get(key, root);
+	public Value get(Point2D p) {
+		if (p == null) throw new NullPointerException("Args cannot be null");
+		return get(p, root);
 	}
 	
 	/**
@@ -41,39 +45,71 @@ public class KdTreeST <Key extends Comparable<Key>, Value>{
 	}
 	
 	// return value associated with the given key rooted in tree at x.
-	private Value get(Key key, Node x) {
-		if (x == null) return null;
-		int cmp = key.compareTo(x.key);
-		if (cmp < 0) return get(key, x.left);
-		else if (cmp > 0) return get(key, x.right);
+	private Value get(Point2D p, Node x) {
+		if (p == null || x == null) throw new NullPointerException("Args cannot be null");
+		int cmp = p.compareTo(x.p);
+		if (cmp < 0) return get(p, x.left);
+		else if (cmp > 0) return get(p, x.right);
 		else return x.val;
 	}
 	
-	public void put(Key key, Value val) {
-		put(key, val, root);
+	public void put(Point2D p, Value val) {
+		if (p == null || val == null) throw new NullPointerException("Args cannot be null");
+		put(p, val, root);
 	}
 	
-	private Node put(Key key, Value val, Node x) {
+	private Node put(Point2D p, Value val, Node x) {
 		if (x == null) {
-			return new Node(key, val);
+			return new Node(p, val);
 		}
-		int cmp = key.compareTo(x.key);
+		int cmp = p.compareTo(x.p);
 		if (cmp == 0) {
 			x.val = val;
 			return x;
 		}
-		else if (cmp < 0) {
-			x.left = put(key,val,x.left);
+		if (cmp < 0) {
+			x.left = put(p,val,x.left);
 			return x;
 		}
 		else {
-			x.right = put(key,val,x.right);
+			x.right = put(p,val,x.right);
 			return x;
 		}
 	}
 
 	public Point2D nearest(Point2D query) {
+		if (query == null) throw new NullPointerException("Args cannot be null");
+		if (isEmpty()) return null;
 		
+		Node nearest = root;
+		return nearest(root, nearest, query, vert).p;
     }
+	
+	private Node nearest(Node n, Node nearest, Point2D pt, boolean axis) {
+		Node current = nearest;
+		if (n == null) return current;
+		
+		double minD = pt.distanceSquaredTo(current.p);
+		double curD = pt.distanceSquaredTo(n.p);
+		
+		if (n.p.distanceSquaredTo(pt) >= minD) return nearest;
+		if (curD < minD) current = n;
+		
+		boolean better = false;
+		
+		// if axis is true, compare x values. Otherwise compare y values.
+		if (axis) better = pt.x() < n.p.x();
+		else better = pt.y() < n.p.y();
+		
+		if (better) {
+			current = nearest(n.left, current, pt, !axis);
+			current = nearest(n.right, current, pt, !axis);
+		} else {
+			current = nearest(n.right, current, pt, !axis);
+			current = nearest(n.left, current, pt, !axis);
+		}
+		
+		return current;
+	}
 
 }
